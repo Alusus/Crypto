@@ -1,0 +1,7 @@
+import"Crypto.alusus"
+use Srl;
+def hashedPassword : String
+def password : String
+password=String("password");
+hashedPassword=Hashes.getHashPassword(password);
+Console.print(hashedPassword);

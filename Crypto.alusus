@@ -1,0 +1,7 @@
+import "Srl/Console.alusus";
+import "Srl/String";
+import "Srl/Array";
+import "Hashes.alusus"
+use Srl;
+module Crypto{
+}
