@@ -1,42 +1,42 @@
 import "libcrypto.so";
 module Hashes {
     func getHashPassword(planText : String ):String
-        {
-                def hashedPassword : array[Char,16];
-                def ans : String="";
-                def i : int=0;
-                def index : int=0;
-                def j : int =0;
-                def hexValue :int=0;
-                def hexArray : Array[int];
-                def remainder : int =0;
-                Hashes.hashMD5(planText.buf,planText.getLength(),hashedPassword)
-                for i=0 , i<16 , i+=1{
-                    j=hashedPassword(i)
-                    remainder = j % 16;
-                    if (remainder < 10){
-                        hexValue = 48 + remainder;
-                    }
-                    else
-                        hexValue = 87 + remainder;
-                    j = j / 16;
-                    hexArray.add(hexValue)
-                    while(j!=0){
-                        remainder = j % 16;
-                        if (remainder < 10){
-                            hexValue = 48 + remainder;
-                        }
-                        else
-                            hexValue = 87 + remainder;
-                        j = j / 16;
-                        hexArray.add(hexValue)
-                    }
-                    for index=hexArray.getLength()-1 , index>= 0 , index-=1
-                        ans=ans+String.format("%c",hexArray(index))
-                    hexArray.clear();
+    {
+        def hashedPassword : array[Char,16];
+        def ans : String="";
+        def i : int=0;
+        def index : int=0;
+        def j : int =0;
+        def hexValue :int=0;
+        def hexArray : Array[int];
+        def remainder : int =0;
+        Hashes.hashMD5(planText.buf,planText.getLength(),hashedPassword)
+        for i=0 , i<16 , i+=1{
+            j=hashedPassword(i)
+            remainder = j % 16;
+            if (remainder < 10){
+                hexValue = 48 + remainder;
+            }
+            else
+                hexValue = 87 + remainder;
+            j = j / 16;
+            hexArray.add(hexValue)
+            while(j!=0){
+                remainder = j % 16;
+                if (remainder < 10){
+                    hexValue = 48 + remainder;
                 }
-                return ans;
+                else
+                    hexValue = 87 + remainder;
+                j = j / 16;
+                hexArray.add(hexValue)
+            }
+            for index=hexArray.getLength()-1 , index>= 0 , index-=1
+                ans=ans+String.format("%c",hexArray(index))
+            hexArray.clear();
         }
+        return ans;
+    }
     @expname[MD5]
         func hashMD5(planText : CharsPtr,lingth : ArchInt,hashedText : ref[array[Char,16]] ) : CharsPtr;
 }
