@@ -1,0 +1,10 @@
+import "Srl/Console";
+import "Apm";
+Apm.importFile("Alusus/Crypto");
+
+use Srl;
+
+def text: String("Crypto binding for Alusus");
+
+Console.print("%s\n", Crypto.md5(text).buf);
+

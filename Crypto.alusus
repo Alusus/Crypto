@@ -1,0 +1,20 @@
+import "Srl/String";
+import "libcrypto.so";
+
+@merge module Crypto {
+    func md5 (planText: String): String {
+        def result: String;
+        def resArray: array[Char,16];
+        md5(planText.buf, planText.getLength(), resArray);
+        result.alloc(32);
+        def i: Int;
+        for i = 0, i < 16, ++i {
+            String.assign(result.buf + i * 2, "%02x", resArray(i));
+        }
+        return result;
+    }
+
+    @expname[MD5]
+    func md5 (planText : CharsPtr,lingth : ArchInt,hashedText : ref[array[Char,16]]): CharsPtr;
+}
+
