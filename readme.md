@@ -56,3 +56,34 @@ using lower level types.
 
 `hashedText`: a reference to the array we want to store the hashed text in.
 
+```
+
+### encodeBase64 function
+
+```
+func encodeBase64(input: String): String;
+```
+
+This function applies the Base64 encode algorithm on a given text.
+
+`input` the text we want to encode.
+
+Returns the Base64 encoded text.
+
+```
+
+### decodeBase64 function
+
+```
+func decodeBase64(input: String): String;
+```
+
+This function applies the Base64 decode algorithm on a given Base64 encoded text .
+
+`input` the Base64 encoded text we want to decode.
+
+Returns the decoded text.
+
+```
+
+
