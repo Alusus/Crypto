@@ -1,33 +1,28 @@
 
 @merge module Crypto {
     func encodeBase64(input: String): String {
-        def i: int = 0;
-        def j: int = 0;
-        def index: int = 0;
+        def output: String;
         def padding: int = 0;
-        def output: String = "";
-        def numberOfBits: int = 0;
-        def val: int = 0;
-        def count: int = 0;
-        def temp: int = 0;
+        def i: Int;
         for i = 0, i < input.getLength(), i += 3 {
-            val = 0;
-            count = 0;
-            numberOfBits = 0;
+            def val: Int = 0;
+            def count: Int = 0;
+            def j: Int;
             for j = i, j < input.getLength() and j <= i + 2, j++ {
                 val = val << 8;
                 val = val | input(j);
                 count++;
             }
-            numberOfBits = count * 8;
+            def numberOfBits: Int = count * 8;
             padding = numberOfBits%3;
             while numberOfBits != 0 {
+                def index: int = 0;
                 if numberOfBits >= 6 {
-                    temp = numberOfBits - 6;
+                    def temp: Int = numberOfBits - 6;
                     index = (val >> temp) & 63;
                     numberOfBits -= 6;
                 } else {
-                    temp = 6 - numberOfBits;
+                    def temp: Int = 6 - numberOfBits;
                     index = (val << temp) & 63;
                     numberOfBits = 0;
                 }
@@ -51,14 +46,12 @@
     }
 
     func decodeBase64(input: String): String {
-        def output: String = "";
-        def i: int = 0;
-        def j: int = 0;
-        def num: int = 0;
-        def countBits: int = 0;
+        def output: String;
+        def i: Int;
         for i = 0, i < input.getLength(), i += 4 {
-            num = 0;
-            countBits = 0;
+            def num: Int = 0;
+            def countBits: Int = 0;
+            def j: Int;
             for j = 0, j < 4, j++ {
                 if input(i + j) != '=' {
                     num = num << 6;

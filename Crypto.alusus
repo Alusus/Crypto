@@ -3,8 +3,9 @@ import "libcrypto.so";
 import "Srl/Console";
 import "Srl/Math";
 import "Srl/Array.alusus";
-import "base64.alusus"
-import "md5.alusus"
+
+import "Crypto/base64";
+import "Crypto/md5";
 @merge module Crypto {
     use Srl;
 }
