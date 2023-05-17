@@ -31,7 +31,7 @@ Console.print("%s\n", Crypto.md5(text).buf);
 
 ## Functions
 
-### md5 function
+### md5
 
 ```
 func md5 (plainText: String): String;
@@ -55,4 +55,28 @@ using lower level types.
 `length`: the length of the text.
 
 `hashedText`: a reference to the array we want to store the hashed text in.
+
+### encodeBase64
+
+```
+func encodeBase64(input: String): String;
+```
+
+This function applies the Base64 encode algorithm on a given text.
+
+`input`: the text we want to encode.
+
+Returns the Base64 encoded text.
+
+### decodeBase64
+
+```
+func decodeBase64(input: String): String;
+```
+
+Decodes a given Base64 encoded text.
+
+`input` the Base64 encoded text we want to decode.
+
+Returns the decoded text.
 

@@ -1,10 +1,9 @@
 import "Srl/Console";
 import "Apm";
 Apm.importFile("Alusus/Crypto");
-
 use Srl;
-
 def text: String("Crypto binding for Alusus");
-
-Console.print("%s\n", Crypto.md5(text).buf);
-
+Console.print("original: %s\n", text.buf);
+Console.print("md5: %s\n", Crypto.md5(text).buf);
+Console.print("base64 encoded: %s\n", Crypto.encodeBase64(text).buf);
+Console.print("base64 decoded: %s\n", Crypto.decodeBase64(Crypto.encodeBase64(text)).buf);
