@@ -1,16 +1,20 @@
 
 @merge module Crypto {
     func encodeBase64(input: String): String {
+        return encodeBase64(input.buf, input.getLength());
+    }
+
+    func encodeBase64(input: ptr, inputSize: ArchInt): String {
         def output: String;
         def padding: int = 0;
         def i: Int;
-        for i = 0, i < input.getLength(), i += 3 {
+        for i = 0, i < inputSize, i += 3 {
             def val: Int = 0;
             def count: Int = 0;
             def j: Int;
-            for j = i, j < input.getLength() and j <= i + 2, j++ {
+            for j = i, j < inputSize and j <= i + 2, j++ {
                 val = val << 8;
-                val = val | input(j);
+                val = val | input~cast[ptr[array[Word[8]]]]~cnt(j);
                 count++;
             }
             def numberOfBits: Int = count * 8;
@@ -45,39 +49,61 @@
         return output;
     }
 
-    func decodeBase64(input: String): String {
+    func decodeBase64(input: CharsPtr): String {
+        def inputLength: ArchInt = String.getLength(input);
+        def outputSize: ArchInt = calculateDecodedBase64Size(input, inputLength);
         def output: String;
+        output.alloc(outputSize);
+        _decodeBase64(input, inputLength, output.buf);
+        output.buf~cnt(outputSize) = 0;
+        return output;
+    }
+
+    func decodeBase64(input: CharsPtr, output: ref[ptr], outputSize: ref[ArchInt]) {
+        def inputLength: ArchInt = String.getLength(input);
+        outputSize = calculateDecodedBase64Size(input, inputLength);
+        output = Memory.alloc(outputSize);
+        _decodeBase64(input, inputLength, output);
+    }
+
+    func _decodeBase64(input: CharsPtr, inputLength: ArchInt, output: ref[ptr]) {
+        def outputIndex: ArchInt = 0;
         def i: Int;
-        for i = 0, i < input.getLength(), i += 4 {
+        for i = 0, i < inputLength, i += 4 {
             def num: Int = 0;
-            def countBits: Int = 0;
+            def bitCount: Int = 0;
             def j: Int;
             for j = 0, j < 4, j++ {
-                if input(i + j) != '=' {
+                if input~cnt(i + j) != '=' {
                     num = num << 6;
-                    countBits += 6;
+                    bitCount += 6;
                 }
-                if (input(i + j) >= 'A' and input(i + j) <= 'Z') {
-                    num = num | (input(i + j) - 'A');
-                } else if input(i + j) >= 'a' and input(i + j) <= 'z' {
-                    num = num | (input(i + j) - 'a' + 26);
-                } else if input(i + j) >= '0' and input(i + j) <= '9' {
-                    num = num | (input(i + j) - '0' + 52);
-                } else if input(i + j) == '+' {
+                if (input~cnt(i + j) >= 'A' and input~cnt(i + j) <= 'Z') {
+                    num = num | (input~cnt(i + j) - 'A');
+                } else if input~cnt(i + j) >= 'a' and input~cnt(i + j) <= 'z' {
+                    num = num | (input~cnt(i + j) - 'a' + 26);
+                } else if input~cnt(i + j) >= '0' and input~cnt(i + j) <= '9' {
+                    num = num | (input~cnt(i + j) - '0' + 52);
+                } else if input~cnt(i + j) == '+' {
                     num = num | 62;
-                } else if input(i + j) == '/' {
+                } else if input~cnt(i + j) == '/' {
                     num = num | 63;
                 } else {
                     num = num >> 2;
-                    countBits -= 2;
+                    bitCount -= 2;
                 }
             }
-            while countBits != 0 {
-                countBits -= 8;
-                output = output + ((num >> countBits) & 255)~cast[char];
+            while bitCount != 0 {
+                bitCount -= 8;
+                output~cast[ptr[array[Word[8]]]]~cnt(outputIndex++) = ((num >> bitCount) & 255)~cast[Word[8]];
             }
         }
-        return output;
+    }
+
+    func calculateDecodedBase64Size(input: CharsPtr, inputLength: ArchInt): ArchInt {
+        def bitCount: ArchInt = inputLength * 6;
+        if input~cnt(inputLength - 1) == '=' bitCount -= 8;
+        if input~cnt(inputLength - 2) == '=' bitCount -= 8;
+        return bitCount / 8;
     }
 }
-
