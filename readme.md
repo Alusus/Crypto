@@ -27,9 +27,13 @@ def text: String("Crypto binding for Alusus");
 
 // call the md5 function on the text we defined and print the result.
 Console.print("%s\n", Crypto.md5(text).buf);
+
+// Load a private key and create a digital signature for text.
+def pkey: ref[Crypto.EvpPkey](Crypto.EvpPkey.readPem("rsakey"));
+Console.print("hmac signature: %s\n", Crypto.sign(text, pkey, Crypto.EvpMd.sha256()).buf);
 ```
 
-## Functions
+## Classes and Functions
 
 ### md5
 
@@ -166,4 +170,5 @@ a signature also in binary format (rather than base64).
   the signature.
 * `outputSize`: A reference to an integer initially containing the size of the provided buffer.
   After the call this will be updated to the actual size of the signature.
+
 
