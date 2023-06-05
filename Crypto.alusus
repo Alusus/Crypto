@@ -1,11 +1,17 @@
 import "Srl/String";
-import "libcrypto.so";
 import "Srl/Console";
 import "Srl/Math";
-import "Srl/Array.alusus";
+import "Srl/Array";
+import "Srl/System";
 
+import "libcrypto.so";
 import "Crypto/base64";
 import "Crypto/md5";
+import "Crypto/signing";
+
 @merge module Crypto {
     use Srl;
+
+    @expname[ERR_get_error]
+    func getError(): ArchWord;
 }

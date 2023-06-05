@@ -1,0 +1,103 @@
+@merge module Crypto {
+    def PemPasswordCb: alias ptr[func (buf: CharsPtr, size: Int, rwflag: Int, u: ptr): Int];
+    def MAX_EVP_MD_SIZE: 640;
+
+    class EvpPkey {
+        handler this~init(DummyToPreventInit) {}
+
+        @expname[PEM_read_PrivateKey]
+        func readPem(fp: ptr[Srl.Fs.File], x: ref[ref[EvpPkey]], cb: PemPasswordCb, u: ptr): ref[EvpPkey];
+
+        func readPem(filename: CharsPtr): ref[EvpPkey] {
+            def fp: ptr[Srl.Fs.File] = Srl.Fs.openFile(filename, "r");
+            def key: ref[EvpPkey](readPem(fp, nullRef[ref[EvpPkey]], null, null));
+            Srl.Fs.closeFile(fp);
+            return key;
+        }
+
+        @expname[EVP_PKEY_free]
+        handler this.free();
+    }
+
+    class EvpPkeyCtx {
+        handler this~init(DummyToPreventInit) {}
+    }
+
+    class EvpMd {
+        handler this~init(DummyToPreventInit) {}
+
+        @expname[EVP_sha224]
+        func sha224(): ref[EvpMd];
+
+        @expname[EVP_sha256]
+        func sha256(): ref[EvpMd];
+
+        @expname[EVP_sha512_224]
+        func sha512_224(): ref[EvpMd];
+
+        @expname[EVP_sha512_256]
+        func sha512_256(): ref[EvpMd];
+
+        @expname[EVP_sha384]
+        func sha384(): ref[EvpMd];
+
+        @expname[EVP_sha512]
+        func sha512(): ref[EvpMd];
+    }
+
+    class EvpMdCtx {
+        handler this~init(DummyToPreventInit) {}
+
+        @expname[EVP_MD_CTX_new]
+        func new(): ref[EvpMdCtx];
+
+        @expname[EVP_MD_CTX_free]
+        handler this.free();
+
+        @expname[EVP_DigestSignInit]
+        handler this.initDigestSign(pkeyCtx: ref[EvpPkeyCtx], tp: ref[EvpMd], e: ptr, pkey: ref[EvpPkey]): Int;
+
+        @expname[EVP_DigestSignUpdate]
+        handler this.updateDigestSign(data: ptr, size: ArchInt): Int;
+
+        @expname[EVP_DigestSignFinal]
+        handler this.finalizeDigestSign(sig: CharsPtr, siglen: ref[ArchInt]): Int;
+    }
+
+    func sign(data: CharsPtr, pkey: ref[EvpPkey], tp: ref[EvpMd]): String {
+        def buf: array[Char, MAX_EVP_MD_SIZE];
+        def size: ArchInt = MAX_EVP_MD_SIZE;
+        sign(data, String.getLength(data), pkey, tp, buf~ptr, size);
+        return encodeBase64(buf~ptr, size);
+    }
+
+    func sign(
+        input: ptr, inputSize: ArchInt,
+        pkey: ref[EvpPkey],
+        tp: ref[EvpMd],
+        output: CharsPtr, outputSize: ref[ArchInt]
+    ) {
+        if input == 0 or pkey~ptr == 0 {
+            System.fail(1, "Crypto.sign error: Invalid args");
+        }
+
+        def ctx: ref[EvpMdCtx](EvpMdCtx.new());
+        if ctx~ptr == null {
+            System.fail(2, String.format("Crypto.sign error: creating context failed with code %l", getError()));
+        }
+
+        if ctx.initDigestSign(nullRef[EvpPkeyCtx], tp, null, pkey) != 1 {
+            System.fail(3, String.format("Crypto.sign error: initDigestSign failed with code %l", getError()));
+        }
+
+        if ctx.updateDigestSign(input, inputSize) != 1 {
+            System.fail(4, String.format("Crypto.sign error: updateDigestSign failed with code %l", getError()));
+        }
+
+        if ctx.finalizeDigestSign(output, outputSize) != 1 {
+            System.fail(5, String.format("Crypto.sign error: finalizeDigestSign failed with code %l", getError()));
+        }
+
+        ctx.free();
+    }
+}

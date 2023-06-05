@@ -7,3 +7,5 @@ Console.print("original: %s\n", text.buf);
 Console.print("md5: %s\n", Crypto.md5(text).buf);
 Console.print("base64 encoded: %s\n", Crypto.encodeBase64(text).buf);
 Console.print("base64 decoded: %s\n", Crypto.decodeBase64(Crypto.encodeBase64(text)).buf);
+def pkey: ref[Crypto.EvpPkey](Crypto.EvpPkey.readPem("rsakey"));
+Console.print("hmac signature: %s\n", Crypto.sign(text, pkey, Crypto.EvpMd.sha256()).buf);
