@@ -14,4 +14,8 @@ import "Crypto/signing";
 
     @expname[ERR_get_error]
     func getError(): ArchWord;
+
+    func getBuildDependencies(): Array[String] {
+        return Array[String]({ String("libcrypto.so") });
+    }
 }
