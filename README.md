@@ -1,5 +1,5 @@
 # Crypto
-[[عربي]](readme.ar.md)
+[[عربي]](README.ar.md)
 
 This library is a binding of libcrypto to Alusus, which contains functions for many encryption algorithms.
 However, this is an early version that currently only supports the md5 function.
