@@ -171,4 +171,12 @@ a signature also in binary format (rather than base64).
 * `outputSize`: A reference to an integer initially containing the size of the provided buffer.
   After the call this will be updated to the actual size of the signature.
 
+---
+
+## License
+
+Copyright (C) 2026 Sarmad Abdullah
+
+This project is licensed under the Apache License v2.0. See the `LICENSE` file for details.
+
 
