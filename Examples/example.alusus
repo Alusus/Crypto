@@ -1,6 +1,6 @@
 import "Srl/Console";
 import "Apm";
-Apm.importFile("Alusus/Crypto");
+Apm.importPackage("Alusus/Crypto@0.1");
 use Srl;
 def text: String("Crypto binding for Alusus");
 Console.print("original: %s\n", text.buf);
